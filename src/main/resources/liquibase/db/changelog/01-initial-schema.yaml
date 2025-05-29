@@ -1,0 +1,219 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_tables_v1
+      author: dev
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password_hash
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: create_tables_v2
+      author: dev
+      changes:
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: client_id
+                  type: UUID
+                  constraints:
+                    foreignKeyName: fk_orders_users
+                    references: users(id)
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: origin
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: destination
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: estimated_delivery_time
+                  type: TIMESTAMP
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: create_tables_v3
+      author: dev
+      changes:
+        - createTable:
+            tableName: vehicles
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: driver_id
+                  type: UUID
+                  constraints:
+                    foreignKeyName: fk_vehicles_users
+                    references: users(id)
+              - column:
+                  name: type
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: license_plate
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: capacity
+                  type: FLOAT
+              - column:
+                  name: current_location
+                  type: VARCHAR(255)
+
+  - changeSet:
+      id: create_tables_v4
+      author: dev
+      changes:
+        - createTable:
+            tableName: packages
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: order_id
+                  type: UUID
+                  constraints:
+                    foreignKeyName: fk_packages_orders
+                    references: orders(id)
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: weight
+                  type: FLOAT
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: create_tables_v5
+      author: dev
+      changes:
+        - createTable:
+            tableName: warehouses
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: location
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: capacity
+                  type: INT
+              - column:
+                  name: available_space
+                  type: INT
+              - column:
+                  name: manager_id
+                  type: UUID
+                  constraints:
+                    foreignKeyName: fk_warehouses_users
+                    references: users(id)
+
+  - changeSet:
+      id: create_tables_v6
+      author: dev
+      changes:
+        - createTable:
+            tableName: routes
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: vehicle_id
+                  type: UUID
+                  constraints:
+                    foreignKeyName: fk_routes_vehicles
+                    references: vehicles(id)
+                    nullable: false
+              - column:
+                  name: origin
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: destination
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: estimated_time
+                  type: BIGINT
+              - column:
+                  name: traffic_conditions
+                  type: TEXT
